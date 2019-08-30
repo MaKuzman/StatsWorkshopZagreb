@@ -1,0 +1,16 @@
+---
+title: "IGNITE Zagreb workshop: which test to use?"
+output: html_notebook
+author: Maja Kuzman
+---
+
+
+Chosing the test:
+1. How is data measured (nominal, (categorical, non parametric)-test for proportion, , 
+interval/ratio= quantitative, summary=mean, tests=test for mean, difference of 2 sample means, regression)
+2. samples (1 sample against hypothesized value,
+            2 samples against eachother,
+            1 twice)
+3. purpose: 
+        testing against hypothesised: 
+            
