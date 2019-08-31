@@ -8,5 +8,5 @@ check.packages <- function(pkg){
 }
 
 # Usage example
-packages<-c("ggplot2", "ISLR", "data.table")
+packages<-c("ggplot2", "ISLR", "data.table", "DAAG")
 check.packages(packages)
