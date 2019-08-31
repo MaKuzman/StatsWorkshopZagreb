@@ -1,0 +1,169 @@
+---
+title: "IGNITE Zagreb workshop: which test to use?"
+output: html_notebook
+author: Maja Kuzman
+---
+
+
+```{r}
+library(data.table)
+library(ggplot2)
+```
+
+Questions to ask when chosing the test:
+
+1. How is data measured   
+     
+     a) nominal, (categorical, non parametric), summary= proportion, percentage  
+          
+          - test for proportion  
+          - Difference of proportions 
+          - Chi^2 test for independence  
+          
+     b) numerical (interval/ratio= quantitative), summary = mean  
+          
+          - test for mean  
+          - difference of means for 2 samples  
+          - regression analysis  
+          
+
+2. Number of samples  
+
+     a) 1 sample  
+          
+          - Test for proportion  
+          - Test for a mean  
+          
+     b) 2 independent samples  
+     
+          - Difference of proportions
+          - difference of means for 2 samples  
+          
+     c) multiple measurements on one sample  
+     
+          - Chi^2 test for independence  
+          - regression analysis  
+          - difference of means for repeated meaurements  
+
+3. Purpose of the test:  
+
+     a) testing against hypothesised value  
+              
+          - Test for proportion  
+          - Test for a mean  
+          - difference of means for repeated meaurements  
+
+     b) comparing two summary values  
+
+          - Difference of proportions
+          - difference of means for 2 samples  
+          
+     c) looking for a relationship between values  
+     
+          - Chi^2 test for independence  
+          - regression analysis  
+     
+            
+
+## Examples:  
+
+### The tall people of Split  
+
+We are interested if people from the city of Split in Croatia are on average taller then the general population of Croatia. We measure 30 people from Split.  
+
+Mean value for the rest of Croatia is 165.  
+
+```{r}
+set.seed(2)
+peopleFromSplit <- rnorm(30,171,20)
+peopleFromSplit
+
+
+```
+
+### A fair game  
+
+We want to figure out if casinos are trying to trick us. We calculated that the odds of getting two numbers that sum up to 7 is around 17%. We roll 2 dices 10 times and only get this sum once. Is this fair?   
+
+```{r}
+
+```
+
+
+### Dark chocolate is better.  
+
+We want to see if people like milk chocolate better then dark chocolate. We give dark chocolate to 50 people and ask them to grade it from 1 - 10. Then we give milk chocolate to the same people and ask for their opinion.  
+
+```{r}
+set.seed(9)
+darkChocolate = sample(sample(1:10, 50, replace = T, prob=c(1,2,3,2,8,8,8,9,6,7)))
+milkChocolate = sample(sample(1:10, 50, replace = T, prob=c(5,8,5,8,8,8,2,3,2,1)))
+
+peoplesOpinions <- data.frame(darkChocolate,
+     milkChocolate )
+
+```
+
+
+### If dark chocolate is not better you are doing it wrong. Part II.    
+
+
+We want to see if results from our experiment agrees with results from the other experiment. In our experiment, 28 out of 50 people preferred dark chocolate, while in the other one 70 out of a hundread prefer it.  
+
+
+```{r}
+firstExperiment <- c(28,22)
+otherExperiment <- c(70, 30)
+preferences <- data.frame(firstExperiment,otherExperiment)
+preferences <- as.matrix(preferences)
+rownames(preferences) <- c("prefer", "dont_prefer")
+preferences
+
+
+```
+
+### If it's free, I'm buying!  
+
+We are selling chocolate. We want to know if free samples are helping sales. One day we gave 80 free samples for 10 days and we recorded the sales. Another 7 days we did not give any free samples and we recorded the sales.  
+
+
+```{r}
+salesWithFreeSamples <- c(5850, 5520, 4910, 4827, 5298, 5320, 4209, 6291, 5928, 4391)
+salesWithoutFreeSamples <- c(4230, 4928, 4729, 4203, 3992, 5001, 5009)
+
+```
+
+### Men, right?  
+
+We want to see if women or men are affected more by the free samples. We recorded who bought the chocolate and if it was a day with free samples or no.  
+
+```{r}
+set.seed(112)
+collectedData <- data.frame(
+     gender = sample(c("woman", "man"), 1000, replace = T),
+     freeSampleDay = sample(c("yes", "no"), 1000, replace = T, prob = c(0.3,0.7))
+)
+head(collectedData)
+
+```
+
+### If it's free, I'm buying again  
+
+
+Again we want to see what connection is there between free samples and sales of chocolate. We give different amounts of free samples for 100 days and record the sales for each day.  
+
+```{r}
+freeSamples = rep((1:10)*10, each=10)
+salesTable <- data.frame(
+     freeSamples,
+     salesThisDay = freeSamples*rnorm(100, 1.5, 0.7)
+ )
+head(salesTable)
+
+```
+
+
+```{r}
+```
+
+
