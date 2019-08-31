@@ -153,7 +153,6 @@ plot(bettermodel)
 As always, our results will be influenced by how we sample the data. This is why it is common procedure to split the data into more parts, train and test on each of them and average the testing errors. This is called cross validation.
 
 ```{r}
-#install.packages("DAAG")
 library(DAAG)
 CV <- cv.lm(data = Auto, mpg~horsepower, m = 5)
 
