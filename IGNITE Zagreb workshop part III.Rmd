@@ -1,0 +1,165 @@
+---
+title: "IGNITE Zagreb workshop: statistical modelling"
+output: html_notebook
+author: Maja Kuzman
+---
+
+
+```{r}
+library(data.table)
+library(ISLR)
+
+```
+
+Linear regression is a simple, but very useful method in statistical learning. Statistical learning is a tool we use to predict behaviour of variables based on small sample from them. I will explain this on Auto dataset. 
+
+
+We will work on Auto dataset from ISLR package.
+The dataset contains information on gas mileage, horsepower, and other information for 392 vehicles. You can look at the description of the dataset by typing:
+```{r}
+?Auto
+```
+
+Lets look at first few values:
+```{r}
+head(Auto)
+```
+
+
+Our goal is to find a mathematical relationship between two how many miles a car can go with a single gallon, and horsepower it has. 
+
+Lets plot those values first:
+Make the plot using geom_point. 
+
+```{r}
+library(ggplot)
+
+```
+
+Use geom_smooth() and lm as a method to add a regression line to the plot.
+
+
+```{r}
+
+```
+
+geom_smooth just made a best linear approximation of the points. 
+
+This was done by choosing from all the possible lines on this plot, the one line which has the smallest distance from all the points. The distance is measured as average squared distance.
+
+This line is useful because it is the most simple explanation for those points. We can see that for the most of the points the line approximates them well. 
+
+  
+Now, use the lm function to make a regression model. Save the results in a variable linmod.
+
+```{r}
+linmod <- lm(mpg ~ horsepower , data = Auto)
+
+```
+
+
+
+Lets see what we get. You can see the results of the linear model by using the summary function:
+
+```{r}
+```
+
+Function plot() works on linear models. It gives you different plots:
+
+```{r}
+plot(linmod)
+
+```
+
+
+If we had only those data, we could predict the mileage per gallon for any car if we knew its horsepower. 
+
+
+```{r}
+
+
+```
+
+If we got a new dataset of cars, how much would this coefficients change? This is given with confint function!
+
+```{r}
+
+
+```
+
+
+
+There is a cool R function which gives you all the scatterplots at once: pairs.
+Try pairs(Auto)
+
+```{r}
+pairs(Auto)
+
+```
+
+
+
+It looks like there are some other things which are also related to mpg. Lets make a linear model that will use different variables to predict mpg:
+
+```{r}
+model_multiple <- lm(mpg ~ displacement + horsepower + weight ,data=Auto)
+summary(model_multiple)
+```
+
+
+
+To see how well which model is better, we can look at the average residuals:
+
+```{r}
+predictedmpg <- predict(linmod, data= Auto)
+
+sum((predictedmpg - Auto$mpg)^2 )/length(Auto$mpg)
+```
+
+Do the same with the model_multiple and conclude which model is better:
+
+```{r}
+predictedmpg <- predict(model_multiple, data= Auto$horsepower)
+sum((predictedmpg - Auto$mpg)^2 )/ length(Auto$mpg)
+
+```
+
+Now, it is expected that the model with more variables can explain the data set better. But we do not know how good it preforms on new data. This is why it is common to train a model on a part of the data set, and predict the values on the remaining part.
+
+Train model_multiple and linmod again on part of the data, predict the mpg values for the training set and test set :
+
+( Calculate the average RSS )
+
+```{r}
+set.seed(1)
+trainindexes <- sample(1:nrow(Auto), 300)
+testindexes <- (1:nrow(Auto))[!1:nrow(Auto)%in%trainindexes]
+trainset <- Auto[trainindexes,]
+testset <- Auto[testindexes,]
+
+
+```
+
+Do the for the multiple regression. Now, you can see that we have bigger residuals in the smallest and biggest values of x. This is usually indicative that a model of different power would be more appropriate. Model which takes horsepower^2  or log (horsepower) instead of horsepower:
+
+```{r}
+bettermodel <- lm(mpg ~ I(log(horsepower)), data=trainset)
+bettermodelmpg <- predict(bettermodel, newdata=testset)
+sum((bettermodelmpg- testset$mpg)^2 )/ length(testset$mpg)
+plot(bettermodel)
+```
+
+
+As always, our results will be influenced by how we sample the data. This is why it is common procedure to split the data into more parts, train and test on each of them and average the testing errors. This is called cross validation.
+
+```{r}
+#install.packages("DAAG")
+library(DAAG)
+CV <- cv.lm(data = Auto, mpg~horsepower, m = 5)
+
+```
+
+
+
+
+
